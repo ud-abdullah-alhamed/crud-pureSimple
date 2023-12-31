@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    img {
+      max-width: 50px;
+      max-height: 50px;
+    }
+
+    .delete-btn {
+      background-color: #ff5757;
+      color: #fff;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+  </style>
+  <title>API Table</title>
+</head>
+<body>
+
+  <h1>Product List</h1>
+  <table id="productTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Price</th>
+        <th>Description</th>
+        <th>Category</th>
+        <th>Image</th>
+        <th>Rating</th>
+        <th>Rating Count</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    function deleteProduct(id) {
+      fetch(`https://fakestoreapi.com/products/${id}`, {
+        method: 'DELETE',
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Log the JSON response to the console
+        console.log('Product deleted:', data);
+        
+        // Refresh the table after successful deletion
+        fetchTableData();
+      })
+      .catch(error => console.error('Error deleting product:', error));
+    }
+
+    function fetchTableData() {
+      fetch('https://fakestoreapi.com/products')
+        .then(response => response.json())
+        .then(data => {
+          const tableBody = document.querySelector('#productTable tbody');
+          tableBody.innerHTML = ''; // Clear previous data
+
+          data.forEach(product => {
+            const row = document.createElement('tr');
+
+            row.innerHTML = `
+              <td>${product.id}</td>
+              <td>${product.title}</td>
+              <td>${product.price}</td>
+              <td>${product.description}</td>
+              <td>${product.category}</td>
+              <td><img src="${product.image}" alt="${product.title}"></td>
+              <td>${product.rating.rate}</td>
+              <td>${product.rating.count}</td>
+              <td><button class="delete-btn" onclick="deleteProduct(${product.id})">Delete</button></td>
+            `;
+
+            tableBody.appendChild(row);
+          });
+        })
+        .catch(error => console.error('Error fetching data:', error));
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initial fetch on page load
+      fetchTableData();
+    });
+  </script>
+
+</body>
+</html>

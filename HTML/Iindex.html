@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movies Table</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    table {
+      width: 80%;
+      border-collapse: collapse;
+      margin: 20px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .edit-btn, .delete-btn, .add-btn {
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .close-btn {
+      background-color: #ccc;
+      color: #333;
+      border: none;
+      padding: 8px 12px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <button class="add-btn" onclick="openAddModal()">Add New Movie</button>
+
+  <table id="moviesTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Title</th>
+        <th>Genre</th>
+        <th>Release Date</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <!-- Add Movie Modal -->
+  <div id="addModal" class="modal">
+    <div class="modal-content">
+      <h2>Add New Movie</h2>
+      <form id="addForm">
+        <label for="addName">Name:</label>
+        <input type="text" id="addName" required>
+        <br>
+        <label for="addTitle">Title:</label>
+        <input type="text" id="addTitle" required>
+        <br>
+        <label for="addGenre">Genre:</label>
+        <input type="text" id="addGenre" required>
+        <br>
+        <label for="addReleaseDate">Release Date:</label>
+        <input type="date" id="addReleaseDate" required>
+        <br>
+        <button type="button" class="close-btn" onclick="closeAddModal()">Close</button>
+        <button type="button" onclick="saveNewMovie()">Save Movie</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+       function deleteMovie() {
+            // Get the movie ID from the input field
+            const movieId = document.getElementById('id').value;
+
+            // API endpoint
+            const apiUrl = `https://apiservicesavxav.azurewebsites.net/api/Movies?id=${movieId}`;
+
+            // Send a DELETE request to the API
+            fetch(apiUrl, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Add any additional headers if needed
+                },
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log(`Movie with ID ${movieId} deleted successfully`);
+                } else {
+                    console.error(`Error deleting movie with ID ${movieId}`);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    // Move the script block to the end of the body
+    document.addEventListener("DOMContentLoaded", function () {
+      const tableBody = document.querySelector("#moviesTable tbody");
+
+      const fetchData = () => {
+        fetch("https://apiservicesavxav.azurewebsites.net/api/Movies")
+          .then(response => response.json())
+          .then(data => {
+            tableBody.innerHTML = '';
+
+            data.forEach(movie => {
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                <td>${movie.id}</td>
+                <td>${movie.name}</td>
+                <td>${movie.title}</td>
+                <td>${movie.genre}</td>
+                <td>${new Date(movie.releaseDate).toLocaleDateString()}</td>
+                <td>
+                    <button class="delete-btn" onclick="deleteMovie()">Delete Movie</button>
+                  <button class="delete-btn" onclick="deleteMovie(${movie.id})">Delete</button>
+                </td>
+              `;
+              tableBody.appendChild(row);
+            });
+          })
+          .catch(error => console.error("Error fetching data:", error));
+      };
+
+      const openEditModal = (id) => {
+        // Implement edit modal logic here
+        console.log(`Open Edit Modal for Movie ID: ${id}`);
+      };
+
+      const openAddModal = () => {
+        const addModal = document.getElementById('addModal');
+        addModal.style.display = 'flex';
+    
+      };
+
+      const closeAddModal = () => {
+        const addModal = document.getElementById('addModal');
+        addModal.style.display = 'none';
+      };
+
+      const saveNewMovie = () => {
+        // Implement the logic to save the new movie here
+        closeAddModal();
+        fetchData(); // Refresh the table after adding
+      };
+
+      // Initial fetch
+      fetchData();
+    });
+  </script>
+
+</body>
+</html>

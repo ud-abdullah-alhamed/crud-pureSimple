@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Product</title>
+  <style>
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: #fff;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Edit Product</h1>
+  
+  <form id="editForm">
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title" required>
+
+    <label for="price">Price:</label>
+    <input type="number" id="price" name="price" required>
+
+    <label for="description">Description:</label>
+    <textarea id="description" name="description" rows="4" required></textarea>
+
+    <label for="category">Category:</label>
+    <input type="text" id="category" name="category" required>
+
+    <button type="button" onclick="submitEdit()">Save Changes</button>
+  </form>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Retrieve the product ID from the query parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      const productId = urlParams.get('id');
+
+      // Fetch the product details using the product ID
+      fetch(`https://fakestoreapi.com/products/${productId}`)
+        .then(response => response.json())
+        .then(product => {
+          // Populate the form fields with the existing product details
+          document.getElementById('title').value = product.title;
+          document.getElementById('price').value = product.price;
+          document.getElementById('description').value = product.description;
+          document.getElementById('category').value = product.category;
+        })
+        .catch(error => console.error('Error fetching product details:', error));
+    });
+
+    function submitEdit() {
+      // Retrieve the edited values from the form
+      const editedProduct = {
+        title: document.getElementById('title').value,
+        price: parseFloat(document.getElementById('price').value),
+        description: document.getElementById('description').value,
+        category: document.getElementById('category').value,
+      };
+
+      // Retrieve the product ID from the query parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      const productId = urlParams.get('id');
+
+      // Make a PUT request to update the product
+      fetch(`https://fakestoreapi.com/products/${productId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(editedProduct),
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Product edited:', data);
+        // Redirect back to the product list or another page as needed
+        window.location.href = 'edit_table.html';
+      })
+      .catch(error => console.error('Error editing product:', error));
+    }
+  </script>
+
+</body>
+</html>
