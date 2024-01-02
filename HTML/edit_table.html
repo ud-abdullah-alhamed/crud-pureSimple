@@ -43,13 +43,11 @@
     <thead>
       <tr>
         <th>ID</th>
-        <th>Title</th>
-        <th>Price</th>
-        <th>Description</th>
-        <th>Category</th>
-        <th>Image</th>
-        <th>Rating</th>
-        <th>Rating Count</th>
+        <th>Name</th>
+        <th>title</th>
+        <th>genre</th>
+        <th>releaseDate</th>
+      
         <th>Actions</th>
       </tr>
     </thead>
@@ -67,7 +65,7 @@
 
   <script>
     function deleteProduct(id) {
-      fetch(`https://fakestoreapi.com/products/${id}`, {
+      fetch(`https://apiservicesavxav.azurewebsites.net/api/Movies/id=${id}`, {
         method: 'DELETE',
       })
       .then(response => {
@@ -92,27 +90,24 @@
     }
 
     function fetchTableData() {
-      fetch('https://fakestoreapi.com/products')
+      fetch('https://apiservicesavxav.azurewebsites.net/api/Movies')
         .then(response => response.json())
         .then(data => {
           const tableBody = document.querySelector('#productTable tbody');
           tableBody.innerHTML = ''; // Clear previous data
 
-          data.forEach(product => {
+          data.forEach(movie => {
             const row = document.createElement('tr');
 
             row.innerHTML = `
-              <td>${product.id}</td>
-              <td>${product.title}</td>
-              <td>${product.price}</td>
-              <td>${product.description}</td>
-              <td>${product.category}</td>
-              <td><img src="${product.image}" alt="${product.title}"></td>
-              <td>${product.rating.rate}</td>
-              <td>${product.rating.count}</td>
+              <td>${movie.id}</td>
+              <td>${movie.name}</td>
+              <td>${movie.title}</td>
+              <td>${movie.genre}</td>
+              <td>${movie.releaseDate}</td>
               <td>
-                <button class="edit-btn" onclick="editProduct(${product.id})">Edit</button>
-                <button class="delete-btn" onclick="deleteProduct(${product.id})">Delete</button>
+                <button class="edit-btn" onclick="editProduct(${movie.id})">Edit</button>
+                <button class="delete-btn" onclick="deleteProduct(${movie.id})">Delete</button>
               </td>
             `;
 
