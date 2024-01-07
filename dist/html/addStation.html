@@ -1,0 +1,60 @@
+<!-- addStation.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Add your head content here -->
+</head>
+
+<body>
+
+    <h2>Add New Station</h2>
+
+    <!-- Form for adding a new station -->
+    <form id="addStationForm">
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" required><br>
+
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="address" required><br>
+
+        <label for="coordinates">Coordinates:</label>
+        <input type="text" id="coordinates" name="coordinates" required><br>
+
+        <label for="description">Description:</label>
+        <input type="text" id="description" name="description"><br>
+
+        <label for="number">Number:</label>
+        <input type="text" id="number" name="number" required><br>
+
+        <label for="type">Type:</label>
+        <input type="text" id="type" name="type" required><br>
+
+        <label for="chargerIds">Charger IDs:</label>
+        <input type="text" id="chargerIds" name="chargerIds" required><br>
+
+        <button type="button" onclick="addNewStation()">Add Station</button>
+    </form>
+
+    <script>
+        function addNewStation() {
+            const stationData = {
+                "title": document.getElementById('title').value,
+                "address": document.getElementById('address').value,
+                "coordinates": document.getElementById('coordinates').value,
+                "description": document.getElementById('description').value,
+                "number": document.getElementById('number').value,
+                "type": document.getElementById('type').value,
+                "chargerIds": document.getElementById('chargerIds').value.split(","),
+            };
+
+            // Send the stationData to your API endpoint for adding a new station
+            // You can use fetch or any other method to send the data to your server
+            console.log('Adding new station:', stationData);
+        }
+    </script>
+
+</body>
+
+</html>

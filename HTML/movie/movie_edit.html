@@ -88,14 +88,15 @@
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        return response.json();
+        return response.json();     
+        window.location.href = 'movies.html';
       })
       .then(data => {
         console.log('Movie edited:', data);
         // Redirect back to the movies list page
       })
       .catch(error => console.error('Error editing movie:', error));
-      window.location.href = 'movies.html';
+ 
     }
   </script>
 
